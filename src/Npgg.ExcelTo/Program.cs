@@ -13,9 +13,10 @@ namespace Npgg.ExcelTo
         static void Main(string[] args)
         {
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
             var filePath = @"c:/_git/DungeonBoard1/configurations/Configuration.xlsx";
-            var outputPath = "c:/_git/DungeonBoard1/configurations/csv/";
-            //var filePath = @"C:\_git\ExcelConverter\ExcelConverter\bin\Debug\net5.0\Configuration.xlsx";
+            var outputPath = "c:/_git/DungeonBoard1/server/DungeonBoard1.Common/Configurations";
+
             using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
             {
                 using (var reader = ExcelReaderFactory.CreateReader(stream))
@@ -38,6 +39,10 @@ namespace Npgg.ExcelTo
                             var line = string.Join(splitCharacter, converted);
                             sb.AppendLine(line);
                         }
+
+                        var outputFilePath= Path.Combine(outputPath, table.TableName + ".csv");
+
+                        File.WriteAllText(outputFilePath, sb.ToString(), new UTF8Encoding(false));
                     }
                 }
             }
