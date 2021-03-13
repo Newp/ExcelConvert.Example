@@ -14,8 +14,8 @@ namespace Npgg.ExcelTo
         {
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-            var filePath = @"c:/_git/DungeonBoard1/configurations/Configuration.xlsx";
-            var outputPath = "c:/_git/DungeonBoard1/server/DungeonBoard1.Common/Configurations";
+            var filePath = args[0]; 
+            var outputPath = args[1]; 
 
             using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
             {
