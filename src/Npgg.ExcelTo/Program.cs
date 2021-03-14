@@ -14,8 +14,18 @@ namespace Npgg.ExcelTo
         {
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
+            Console.WriteLine(string.Join('\t', args));
             var filePath = args[0]; 
-            var outputPath = args[1]; 
+            var outputPath = args[1];
+
+            var exportExtension = args[2];
+
+            var splitCharacter = exportExtension.ToLower() switch
+            {
+                "csv" => ',',
+                "tsv" => '\t',
+                _=> throw new Exception("invalid args[2] format")
+            };
 
             using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
             {
@@ -23,7 +33,6 @@ namespace Npgg.ExcelTo
                 {
 
                     var result = reader.AsDataSet();
-                    char splitCharacter = ',';
                     foreach (DataTable table in result.Tables)
                     {
                         StringBuilder sb = new StringBuilder();
@@ -32,15 +41,15 @@ namespace Npgg.ExcelTo
                         {
                             var converted = row
                                 .ItemArray
-                                .Select(item => item.ToString())
-                                .Select(item => item.Contains('"') || item.Contains(splitCharacter) ? $"\"{item}\"" : item);
+                                .Select(item => item.ToString());
+                                
                                 
 
                             var line = string.Join(splitCharacter, converted);
                             sb.AppendLine(line);
                         }
 
-                        var outputFilePath= Path.Combine(outputPath, table.TableName + ".csv");
+                        var outputFilePath= Path.Combine(outputPath, $"{table.TableName}.{exportExtension}");
 
                         File.WriteAllText(outputFilePath, sb.ToString(), new UTF8Encoding(false));
                     }
